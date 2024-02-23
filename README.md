@@ -1,2 +1,2 @@
 # atds
-Data Structures for ATCS class
+# Data Structures for ATCS class
