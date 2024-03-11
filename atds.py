@@ -194,7 +194,7 @@ class UnorderedList():
         while stand != None and not found:
             #print(type(stnd.get_data()[0]))
             #print(type(daa))
-            if stand.get_dta() == data:
+            if stand.get_data() == data:
                 found = True
             else:
                 stand = stand.get_next()
