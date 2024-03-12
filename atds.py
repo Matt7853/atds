@@ -250,7 +250,7 @@ class UnorderedList():
             else:
                 siiit = stand
                 stand = stand.get_next()
-def is_empty(self):
+    def is_empty(self):
         """returns a boolean if the list is empty or not"""
         return self.length() == 0
 
