@@ -94,6 +94,27 @@ class Deque(object):
     def is_empty(self):
         return len(self.d) == 0
 
+class Node(object):
+    def __init__(self, data):
+        self.data = data
+        self.next = None
+
+    def get_data(self):
+        return self.data
+    
+    def set_data(self, data):
+        self.data = data
+    
+    def get_next(self):
+        return self.next
+    
+    def set_next(self, nxt):
+        self.next = nxt
+
+    def __repr__(self):
+        return "[data="+str(self.data) + ", next="+ str(self.next)+"]"
+        # super().__repr__() +  -\_('-')_/- just in case
+
 class UnorderedList():
     """Maintains an unordered list via a linked series of Nodes
     """
