@@ -250,3 +250,31 @@ class UnorderedList():
             else:
                 siiit = stand
                 stand = stand.get_next()
+def is_empty(self):
+        """returns a boolean if the list is empty or not"""
+        return self.length() == 0
+
+    
+class UnorderedListStack(object):
+    def __init__(self):
+        self.us = UnorderedList()
+
+    def __repr__(self):
+        return str(self.us)
+    
+    def push(self, item):
+        return self.us.add(item)
+
+    def pop(self):
+        return self.us.pop(0)
+
+    def peek(self):
+        poke = self.us.pop(0)
+        self.us.add(poke)
+        return poke
+    
+    def size(self):
+        return self.us.length()
+    
+    def is_empty(self):
+        return self.us.is_empty()
