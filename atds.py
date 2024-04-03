@@ -278,3 +278,44 @@ class UnorderedListStack(object):
     
     def is_empty(self):
         return self.us.is_empty()
+
+class HashTable():
+    def __init__(self, m):
+        self.size = m
+        self.slots = [None] * self.size
+        self.keys =  [None] * self.size
+    
+    def hash_function(self, key, size):
+        return key % size
+    
+    def put(self, key, value):
+        hvalue = self.hash_function(key, self.size)
+        if self.slots[hvalue] == None:
+            self.slots[hvalue] = key
+            self.keys[hvalue] = value
+        elif self.slots[hvalue] == key:
+            self.keys[hvalue] = value
+        else:
+            nextfree = (hvalue + 1) % self.size
+            while self.slots[nextfree] != None and self.slots[nextfree] != key:
+                nextfree = (nextfree+1) % self.size
+            if self.slots[nextfree] == key:
+                self.keys[nextfree] = value
+            else:
+                self.slots[nextfree] = key
+                self.keys[nextfree] = value
+    
+    def get(self, key):
+        hvalue = self.hash_function(key, self.size)
+        if hvalue not in self.slots:
+            return None
+        elif self.slots[hvalue] != None and self.slots[hvalue] == key:
+            return self.keys[hvalue]
+        else:
+            nextfree = (hvalue + 1) % self.size
+            while self.slots[nextfree] != None and self.slots[nextfree] != key:
+                nextfree = (nextfree+1) % self.size
+            return self.keys[nextfree]
+
+    def __repr__(self):
+        return "Keys:   " + str(self.slots) + "\n" + "Values: " + str(self.keys)
