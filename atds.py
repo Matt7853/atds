@@ -350,3 +350,199 @@ class BinaryTree():
     
     def __str__(self):
         return f"BinaryTree[key={self.root},\nleft_child={self.left},\nright_child={self.right}]"
+
+class Vertex(object):
+    """Describes a vertex object in terms of a "key" and a
+    dictionary that indicates edges to neighboring vertices with
+    a specified weight.
+    """
+    
+    def __init__(self, key):
+        """Constructs a vertex with a key value and an empty dictionary 
+        in which we'll store other vertices to which this vertex is
+        connected.
+        """
+        self.id = key
+        self.connected_to = {}   # empty dictionary for neighboring vertices
+        self.color = 'white'
+        self.distance = 0
+        self.predecessor = None
+        self.discovery_time = 0     # discovery time
+        self.finish_time = 0        # finish time  
+    
+    def add_neighbor(self, neighbor_vertex, weight=0):
+        """Adds a reference to a neighboring Vertex object to the
+        dictionary, to which this vertex is connected by an edge. 
+        If a weight is not indicated, default weight is 0.
+        """
+        self.connected_to[neighbor_vertex] = weight
+    
+    def set_color(self, color):
+        self.color = color
+    
+    def get_color(self):
+        return self.color
+    
+    def set_distance(self, distance):
+        self.distance = distance
+    
+    def get_distance(self):
+        return self.distance
+    
+    def set_pred(self, predecessor):
+        self.predecessor = predecessor
+    
+    def get_pred(self):
+        return self.predecessor
+    
+    def set_discovery(self, discovery_time):
+        self.discovery_time = discovery_time
+    
+    def get_discovery(self):
+        return self.discovery_time
+    
+    def set_finish(self, finish_time):
+        self.finish_time = finish_time
+    
+    def get_finish(self):
+        return self.finish_time
+    
+    def __repr__(self):
+        """Returns a representation of the vertex and its neighbors,
+        suitable for printing. Check out the example of 'list
+        comprehension' here!
+        """
+        return 'Vertex[id=' + str(self.id) \
+                + ',color=' + self.color \
+                + ',dist=' + str(self.distance) \
+                + ',pred=' + str(self.predecessor) \
+                + ',disc=' + str(self.discovery_time) \
+                + ',fin=' + str(self.finish_time) \
+              + '] connected_to: ' + str([x.id for x in self.connected_to]) 
+    
+    def get_connections(self):
+        """Returns the keys of the vertices we're connected to
+        """
+        return self.connected_to.keys()
+    
+    def get_id(self):
+        """Returns the id ("key") for this vertex
+        """
+        return self.id
+    
+    def get_weight(self, neighbor_vertex):
+        """Returns the weight of an edge connecting this vertex 
+        with another.
+        """
+        return self.connected_to[neighbor_vertex]
+
+class Graph(object):
+    """Describes the Graph class, which is primarily a dictionary
+    mapping vertex names to Vertex objects, along with a few methods
+    that can be used to manipulate them.
+    """
+    def __init__(self):
+        """Initializes an empty dictionary of Vertex objects
+        """
+        self.graph = {}
+
+    def add_vertex(self, key):
+        """Creates a new "key-value" dictionary entry with the string "key"
+        key as the dictionary key, and the Vertex object itself as the value.
+        Returns the new vertex as a result.
+        """
+        new_vertex = Vertex(key)
+        self.graph[key] = new_vertex
+        return new_vertex
+
+    def get_vertex(self, key):
+        """Looks for the key in the dictionary of Vertex objects, and
+        returns the Vertex if found. Otherwise, returns None.
+        """
+        if key in self.graph.keys():
+            return self.graph[key]
+        else:
+            return None
+
+    def __contains__(self, key):
+        """This 'dunder' expression is written so we can use Python's "in"
+        operation: If the parameter 'key' is in the dictionary of vertices,
+        the value of "key in my_graph" will be True, otherwise False.
+        """
+        return key in self.graph.keys()
+
+    def add_edge(self, from_key, to_key, weight=0):
+        """Adds an edge connecting two vertices (specified by key
+        parameters) by modifying those vertex objects. Note that
+        the weight can be specified as well, but if one isn't
+        specified, the value of weight will be the default value
+        of 0.
+        """
+        # if the from_key doesn't yet have a vertex, create it
+        if from_key not in self.get_vertices():
+            self.add_vertex(from_key)
+        # if the to_key doesn't yet have a vertex, create it
+        if to_key not in self.get_vertices():
+            self.add_vertex(to_key)
+        # now we can create the edge between the two
+        self.get_vertex(from_key).add_neighbor(self.get_vertex(to_key), weight)
+
+    def get_vertices(self):
+        """Returns a list of the Graph's Vertex keys"""
+        return self.graph.keys()
+
+    def __iter__(self):
+        """Another 'dunder' expression that allows us to iterate through
+        the list of vertices.
+        Example use:
+        for vertex in graph:  # Python understands this now!
+            print(vertex)
+        """
+        return iter(self.graph.values())
+    
+def off_by_one(v1, v2):
+    count = 0
+    if len(v1) != len(v2):
+        return None
+    for i in range(len(v1)):
+        if v1[i] != v2[i]:
+            count += 1
+    return count == 1
+    
+def make_graph():
+    g = Graph()
+    file = open("four_letter_words.txt")
+    for line in file:
+        word = line.rstrip()
+        g.add_vertex(word)
+    for vertex1 in g:
+        for vertex2 in g:
+            if off_by_one(vertex1.get_id(), vertex2.get_id()):
+                g.add_edge(vertex1.get_id(), vertex2.get_id())
+    return g
+
+def breadth_first(start):
+        """Does a BFS on "graph" beginning at "start" vertex, and creating a series of links between the vertices
+        """
+        start.set_distance(0)
+        start.set_pred(None)
+        queue = []
+        queue.append(start)
+        while len(queue) > 0:
+            current_vert= queue.pop(0)
+            for neighbor in current_vert.get_connections():
+                #print(neighbor)
+                if neighbor.get_color() == 'white':
+                    neighbor.set_color('gray')
+                    neighbor.set_pred(current_vert)
+                    queue.append(neighbor)
+            current_vert.set_color('black')
+
+def traverse(final):
+    """travels back up the graph to the start node by following the predecesors
+    """
+    current = final
+    while current.get_pred() != None:
+        print(current.get_id())
+        current = current.get_pred()
+    print(current.get_id())
