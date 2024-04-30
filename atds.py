@@ -521,7 +521,7 @@ def make_graph():
                 g.add_edge(vertex1.get_id(), vertex2.get_id())
     return g
 
-def breadth_first(start):
+def bfs(start):
         """Does a BFS on "graph" beginning at "start" vertex, and creating a series of links between the vertices
         """
         start.set_distance(0)
